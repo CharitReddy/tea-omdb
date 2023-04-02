@@ -1,10 +1,10 @@
-import apiClient from "./apiClient";
+import apiClient from "services/apiClient";
 
 const { get } = apiClient;
 const omdbApiKey = process.env.REACT_APP_OMDB_API_KEY;
 
 export const SEARCH_APIs = {
-  searchTitle(searchString: string) {
+  searchWithTitle(searchString: string) {
     return get(`?s=${searchString}&apikey=${omdbApiKey}`);
   },
 };

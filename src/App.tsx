@@ -1,29 +1,23 @@
-import React, { useEffect } from "react";
-import logo from "./logo.svg";
+import { useEffect } from "react";
 import "./App.css";
-import { SEARCH_APIs } from "../src/services/apiCalls";
+import { SEARCH_APIs } from "services/apiCalls";
+import Home from "pages/Home";
 
 function App() {
   //API Test
   useEffect(() => {
-    SEARCH_APIs.searchTitle("abc");
+    SEARCH_APIs.searchWithTitle("")
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (
     <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'>
-          Learn React
-        </a>
-      </header>
+      <Home />
     </div>
   );
 }
