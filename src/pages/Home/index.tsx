@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SearchBar from "components/SearchBar";
 import { SEARCH_APIs } from "services/apiCalls";
 

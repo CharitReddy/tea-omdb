@@ -2,7 +2,7 @@ import { FC } from "react";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import en from "locales/en.json";
+import t from "translations";
 interface SearchBarProps {
   handleChange: (value: string) => void;
   value: string;
@@ -14,17 +14,6 @@ const SearchBar: FC<SearchBarProps> = ({
   value,
   onSearchClick,
 }) => {
-  type Translations = {
-    [key: string]: string;
-  };
-
-  const translations: Translations = en as Translations;
-
-  function t(key: string): string {
-    const translation = translations[key];
-    return translation || `Missing translation: ${key}`;
-  }
-
   return (
     <>
       <InputBase
