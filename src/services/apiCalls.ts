@@ -7,4 +7,7 @@ export const SEARCH_APIs = {
   searchWithTitle(searchString: string) {
     return get(`?s=${searchString}&apikey=${omdbApiKey}`);
   },
+  searchWithId(searchId: string) {
+    return get(`?i=${searchId}&apikey=${omdbApiKey}`);
+  },
 };
