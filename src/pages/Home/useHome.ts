@@ -86,7 +86,12 @@ export const useHome = () => {
     SEARCH_APIs.searchWithId(imdbID)
       .then((response) => {
         console.log(response.data);
-        setClickedMovie(response.data);
+        let responseMovie = response.data;
+        const keyToShift = "Ratings";
+        const valueToShift = responseMovie[keyToShift];
+        delete responseMovie[keyToShift];
+        responseMovie[keyToShift] = valueToShift;
+        setClickedMovie(responseMovie);
         setShowMovieDetailsDialog(true);
       })
       .catch((error) => {
