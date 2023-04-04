@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, FormEvent, MouseEvent } from "react";
 import { MovieCardProps } from "components/MovieCard";
 import { SEARCH_APIs } from "services/apiCalls";
 
-interface MovieDetails {
+export interface MovieDetails {
   Title: string;
   Year: string;
   Rated: string;
@@ -40,33 +40,42 @@ export const useHome = () => {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isMovieDetailsLoading, setIsMovieDetailsLoading] = useState(false);
   const [hasApiError, setHasApiError] = useState(false);
+  const [showMovieDetailsDialog, setShowMovieDetailsDialog] = useState(false);
 
   const handleSearchBarChange = useCallback((value: string) => {
     setHasApiError(false);
     setSearchString(value);
   }, []);
 
+  const fetchMoviesBySearch = () => {
+    setIsSearchLoading(true);
+    setHasApiError(false);
+    SEARCH_APIs.searchWithTitle(searchString)
+      .then((response) => {
+        console.log(response.data);
+        const { Search, Response, Error } = response.data;
+        if (Response === "True") {
+          setMoviesList(Search);
+        } else {
+          setHasApiError(true);
+          setErrorMessage(Error);
+          setMoviesList([]);
+        }
+      })
+      .catch((error) => {
+        setHasApiError(true);
+        setMoviesList([]);
+        console.log(error);
+      })
+      .finally(() => {
+        setIsSearchLoading(false);
+      });
+  };
+
   const onSearchClick = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
-      setIsSearchLoading(true);
       event.preventDefault();
-      SEARCH_APIs.searchWithTitle(searchString)
-        .then((response) => {
-          console.log(response.data);
-          const { Search, Response, Error } = response.data;
-          if (Response === "True") {
-            setMoviesList(Search);
-          } else {
-            setErrorMessage(Error);
-          }
-        })
-        .catch((error) => {
-          setHasApiError(true);
-          console.log(error);
-        })
-        .finally(() => {
-          setIsSearchLoading(false);
-        });
+      fetchMoviesBySearch();
     },
     [searchString]
   );
@@ -78,6 +87,7 @@ export const useHome = () => {
       .then((response) => {
         console.log(response.data);
         setClickedMovie(response.data);
+        setShowMovieDetailsDialog(true);
       })
       .catch((error) => {
         setHasApiError(true);
@@ -87,6 +97,14 @@ export const useHome = () => {
       });
   };
 
+  const handleDetailsClose = useCallback(() => {
+    setShowMovieDetailsDialog(false);
+  }, []);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchString("");
+  }, []);
+
   return useMemo(
     () => ({
       handleSearchBarChange,
@@ -94,10 +112,14 @@ export const useHome = () => {
       onSearchClick,
       moviesList,
       onMovieCardClick,
+      clickedMovie,
       isSearchLoading,
       isMovieDetailsLoading,
       hasApiError,
       errorMessage,
+      showMovieDetailsDialog,
+      handleDetailsClose,
+      handleClearSearch,
     }),
     [
       handleSearchBarChange,
@@ -105,10 +127,14 @@ export const useHome = () => {
       onSearchClick,
       moviesList,
       onMovieCardClick,
+      clickedMovie,
       isSearchLoading,
       isMovieDetailsLoading,
       hasApiError,
       errorMessage,
+      showMovieDetailsDialog,
+      handleDetailsClose,
+      handleClearSearch,
     ]
   );
 };

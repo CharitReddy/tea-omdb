@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
-
 export interface MovieCardProps {
   movieData: {
     Title: string;
@@ -15,7 +14,13 @@ const MovieCard: FC<MovieCardProps> = ({ movieData }) => {
   const { Title, Year, Type, Poster } = movieData;
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardMedia sx={{ height: 140 }} title={Title} image={Poster} />
+      <CardMedia
+        sx={{ height: 140 }}
+        title={Title}
+        image={
+          Poster !== "N/A" ? Poster : "/assets/images/image_not_available.png"
+        }
+      />
       <CardContent>
         <Typography gutterBottom variant='h5' component='div'>
           {Title}

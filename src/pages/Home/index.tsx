@@ -2,6 +2,7 @@ import { useHome } from "./useHome";
 import SearchBar from "components/SearchBar";
 import MovieCard from "components/MovieCard";
 import { Grid, Paper, CircularProgress, Alert } from "@mui/material";
+import DetailsDialog from "components/DetailsDialog";
 import t from "translations";
 
 const Home = () => {
@@ -11,10 +12,14 @@ const Home = () => {
     onSearchClick,
     moviesList,
     onMovieCardClick,
+    clickedMovie,
     isSearchLoading,
     isMovieDetailsLoading,
     hasApiError,
     errorMessage,
+    showMovieDetailsDialog,
+    handleDetailsClose,
+    handleClearSearch,
   } = useHome();
 
   return (
@@ -23,6 +28,7 @@ const Home = () => {
         handleChange={handleSearchBarChange}
         value={searchString}
         onSearchClick={onSearchClick}
+        handleClearSearch={handleClearSearch}
       />
       {hasApiError && (
         <Alert severity='error'>
@@ -35,7 +41,7 @@ const Home = () => {
           justifyContent: "center",
           alignItems: "center",
           padding: 2,
-          // backgroundColor: "red",
+          minHeight: "calc(100vh - 180px)",
         }}>
         {isSearchLoading ? (
           <CircularProgress
@@ -57,7 +63,7 @@ const Home = () => {
                 item
                 key={movie.imdbID}
                 xs={12}
-                sm={12}
+                sm={3}
                 md={3}
                 lg={4}
                 justifyContent='center'
@@ -79,6 +85,13 @@ const Home = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
           }}
+        />
+      )}
+      {clickedMovie && (
+        <DetailsDialog
+          open={showMovieDetailsDialog}
+          handleClose={handleDetailsClose}
+          clickedMovie={clickedMovie}
         />
       )}
     </>
