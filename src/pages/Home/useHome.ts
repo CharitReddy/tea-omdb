@@ -36,11 +36,13 @@ export const useHome = () => {
     []
   );
   const [clickedMovie, setClickedMovie] = useState<MovieDetails | null>(null);
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isMovieDetailsLoading, setIsMovieDetailsLoading] = useState(false);
+  const [hasApiError, setHasApiError] = useState(false);
 
   const handleSearchBarChange = useCallback((value: string) => {
+    setHasApiError(false);
     setSearchString(value);
   }, []);
 
@@ -55,10 +57,11 @@ export const useHome = () => {
           if (Response === "True") {
             setMoviesList(Search);
           } else {
-            setError(Error);
+            setErrorMessage(Error);
           }
         })
         .catch((error) => {
+          setHasApiError(true);
           console.log(error);
         })
         .finally(() => {
@@ -70,12 +73,15 @@ export const useHome = () => {
 
   const onMovieCardClick = (imdbID: string) => {
     setIsMovieDetailsLoading(true);
+    setHasApiError(false);
     SEARCH_APIs.searchWithId(imdbID)
       .then((response) => {
         console.log(response.data);
         setClickedMovie(response.data);
       })
-      .catch((error) => {})
+      .catch((error) => {
+        setHasApiError(true);
+      })
       .finally(() => {
         setIsMovieDetailsLoading(false);
       });
@@ -90,6 +96,8 @@ export const useHome = () => {
       onMovieCardClick,
       isSearchLoading,
       isMovieDetailsLoading,
+      hasApiError,
+      errorMessage,
     }),
     [
       handleSearchBarChange,
@@ -99,6 +107,8 @@ export const useHome = () => {
       onMovieCardClick,
       isSearchLoading,
       isMovieDetailsLoading,
+      hasApiError,
+      errorMessage,
     ]
   );
 };

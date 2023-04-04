@@ -1,7 +1,8 @@
 import { useHome } from "./useHome";
 import SearchBar from "components/SearchBar";
 import MovieCard from "components/MovieCard";
-import { Grid, Paper, Skeleton, CircularProgress } from "@mui/material";
+import { Grid, Paper, CircularProgress, Alert } from "@mui/material";
+import t from "translations";
 
 const Home = () => {
   const {
@@ -12,6 +13,8 @@ const Home = () => {
     onMovieCardClick,
     isSearchLoading,
     isMovieDetailsLoading,
+    hasApiError,
+    errorMessage,
   } = useHome();
 
   return (
@@ -21,6 +24,11 @@ const Home = () => {
         value={searchString}
         onSearchClick={onSearchClick}
       />
+      {hasApiError && (
+        <Alert severity='error'>
+          {errorMessage || t("genericErrorMessage")}
+        </Alert>
+      )}
       <Paper
         sx={{
           display: "flex",
