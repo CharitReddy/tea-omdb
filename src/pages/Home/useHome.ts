@@ -3,6 +3,7 @@ import { MovieCardProps } from "common/interfaces";
 import { SEARCH_APIs } from "services/apiCalls";
 import debounce from "utils/debounce";
 import { MovieDetails } from "common/interfaces";
+import calculateTotalPages from "utils/calculateTotalPages";
 
 const DEBOUNCE_TIMER = 1000;
 
@@ -17,25 +18,36 @@ export const useHome = () => {
   const [isMovieDetailsLoading, setIsMovieDetailsLoading] = useState(false);
   const [hasApiError, setHasApiError] = useState(false);
   const [showMovieDetailsDialog, setShowMovieDetailsDialog] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    debouncedFetchMoviesBySearch(searchString);
-  }, [searchString]);
+    debouncedFetchMoviesBySearch(searchString, page);
+  }, [page]);
 
   const handleSearchBarChange = (value: string) => {
     setHasApiError(false);
     setSearchString(value);
-    debouncedFetchMoviesBySearch(value);
+    setPage(1);
+    debouncedFetchMoviesBySearch(value, 1);
   };
 
-  const fetchMoviesBySearch = (searchTerm: string) => {
-    setIsSearchLoading(true);
+  const fetchMoviesBySearch = (searchTerm: string, pageNumber: number) => {
     setHasApiError(false);
-    SEARCH_APIs.searchWithTitle(searchTerm)
+    if (searchTerm.trim() === "") {
+      setMoviesList([]);
+      setPage(1);
+      setIsSearchLoading(false);
+      return;
+    }
+    setIsSearchLoading(true);
+
+    SEARCH_APIs.searchWithTitle(searchTerm, pageNumber)
       .then((response) => {
         console.log(response.data);
-        const { Search, Response, Error } = response.data;
+        const { totalResults, Search, Response, Error } = response.data;
         if (Response === "True") {
+          setTotalPages(calculateTotalPages(+totalResults, 10));
           setMoviesList(Search);
         } else {
           setHasApiError(true);
@@ -56,7 +68,7 @@ export const useHome = () => {
   const onSearchClick = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      fetchMoviesBySearch(searchString);
+      setPage(1);
     },
     [searchString]
   );
@@ -111,6 +123,9 @@ export const useHome = () => {
       showMovieDetailsDialog,
       handleDetailsClose,
       handleClearSearch,
+      page,
+      setPage,
+      totalPages,
     }),
     [
       handleSearchBarChange,
@@ -126,6 +141,9 @@ export const useHome = () => {
       showMovieDetailsDialog,
       handleDetailsClose,
       handleClearSearch,
+      page,
+      setPage,
+      totalPages,
     ]
   );
 };

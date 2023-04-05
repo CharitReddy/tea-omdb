@@ -8,6 +8,7 @@ import {
   Alert,
   Typography,
 } from "@mui/material";
+import CustomPagination from "components/CustomPagination";
 import DetailsDialog from "components/DetailsDialog";
 import t from "translations";
 
@@ -26,6 +27,9 @@ const Home = () => {
     showMovieDetailsDialog,
     handleDetailsClose,
     handleClearSearch,
+    page,
+    setPage,
+    totalPages,
   } = useHome();
 
   return (
@@ -53,6 +57,7 @@ const Home = () => {
           alignItems: "center",
           padding: 2,
           minHeight: "calc(100vh - 180px)",
+          flexDirection: "column",
         }}>
         {isSearchLoading ? (
           <CircularProgress
@@ -70,14 +75,21 @@ const Home = () => {
                 item
                 key={movie.imdbID}
                 xs={12}
-                sm={4}
-                md={4}
+                sm={10}
+                md={5}
                 lg={4}
                 onClick={() => onMovieCardClick(movie.imdbID)}>
                 <MovieCard movieData={movie} />
               </Grid>
             ))}
           </Grid>
+        )}
+        {!!moviesList?.length && (
+          <CustomPagination
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+          />
         )}
       </Paper>
       {console.log(isMovieDetailsLoading)}
