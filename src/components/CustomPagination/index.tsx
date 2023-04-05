@@ -9,13 +9,12 @@ interface CustomPaginationProps {
   totalPages: number;
 }
 
+//Pagination component that sets and delegates clicked page number to parent
 const CustomPagination: FC<CustomPaginationProps> = ({
   page,
   setPage,
   totalPages,
 }) => {
-  useEffect(() => {}, [page]);
-
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };

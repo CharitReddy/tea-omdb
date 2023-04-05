@@ -2,6 +2,8 @@ import { FC } from "react";
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { MovieCardProps } from "common/interfaces";
 
+//Card to display basic details of movie along with poster.
+//If the title of a movie exceeds 2 lines, ellipsis is displayed for consistency in card heights
 const MovieCard: FC<MovieCardProps> = ({ movieData }) => {
   const { Title, Year, Type, Poster } = movieData;
   return (

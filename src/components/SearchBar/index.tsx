@@ -12,6 +12,7 @@ interface SearchBarProps {
   handleClearSearch: () => void;
 }
 
+//Search bar with text input, clear text and search buttons.
 const SearchBar: FC<SearchBarProps> = ({
   handleChange,
   value,

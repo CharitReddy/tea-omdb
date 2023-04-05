@@ -1,5 +1,6 @@
 import { translations } from "translations/en";
 
+//Translation function to support multiple languages.
 export type Translations = {
   [key: string]: string;
 };

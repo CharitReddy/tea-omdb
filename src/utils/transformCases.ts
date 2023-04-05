@@ -1,3 +1,4 @@
+//Utility to transform camelCase or PascalCase text to separate words.
 const transformCases = (casedText: string): string => {
   if (!casedText) {
     return "";

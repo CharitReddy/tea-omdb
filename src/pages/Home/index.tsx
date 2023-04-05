@@ -32,6 +32,18 @@ const Home = () => {
     totalPages,
   } = useHome();
 
+  //Displays a search bar on the top, a card grid of 10 movies when searched.
+  //Opens a dialog with all details of movie when clicked.
+  //Pagination on the bottom to view all results.
+
+  /*Search is triggered when:
+   * Input is provided - Debounced function, 1s gap between 2 key strokes.
+   * Search button click/enter key press.
+   * Empty search term is ignored.
+   */
+
+  //Displays loaders when any API call is being made.
+  //Shows error message on top in case of API error or invalid request.
   return (
     <>
       <SearchBar

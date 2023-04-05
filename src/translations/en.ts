@@ -1,5 +1,6 @@
 import { Translations } from "translations";
 
+//English language file for all messages being used in the app.
 export const translations: Translations = {
   searchButtonLabel: "Search",
   clearSearchLabel: "clear search",

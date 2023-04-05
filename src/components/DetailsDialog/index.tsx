@@ -39,6 +39,7 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
 }) => {
   return (
     <>
+      {/*Portal for Dialog/Modal*/}
       {createPortal(
         <Dialog
           open={open}
@@ -59,6 +60,7 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               key={`${clickedMovie?.imdbID}-container`}>
+              {/*Movie Poster Image*/}
               <Grid
                 item
                 xs={12}
@@ -78,9 +80,14 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
               </Grid>
               {Object.entries(clickedMovie as MovieDetails).map(
                 ([key, value]) => {
+                  {
+                    /*Ratings is an array of ratings, so returning a different JSX to display ratings and common for others*/
+                  }
                   if (key === "Ratings")
                     return (
                       <>
+                        {/*Just a header Ratings */}
+
                         <Grid
                           item
                           xs={6}
@@ -99,6 +106,9 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                           xs={6}
                           key={`${clickedMovie?.imdbID}rating-${value}${key}-emptySpace`}></Grid>
                         {clickedMovie?.[key].map((rating) => {
+                          {
+                            /*Actual ratings containing both source and rating*/
+                          }
                           return (
                             <>
                               <Grid
@@ -121,8 +131,14 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                         })}
                       </>
                     );
+
+                  {
+                    /*Poster has already been rendered, so ignoring it */
+                  }
                   if (key === "Poster") return;
-                  if (key === "Response") return;
+                  {
+                    /*Finally, returning a common JSX of header and information for all other keys */
+                  }
                   return (
                     <>
                       <Grid

@@ -1,3 +1,4 @@
+//Utility to create debounced version of any function.
 const debounce = <F extends (...args: any[]) => void>(
   func: F,
   timeout: number
