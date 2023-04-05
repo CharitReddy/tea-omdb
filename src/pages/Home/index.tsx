@@ -53,22 +53,15 @@ const Home = () => {
             }}
           />
         ) : (
-          <Grid
-            container
-            spacing={2}
-            justifyContent='center'
-            sx={{ margin: "auto" }}>
+          <Grid container rowSpacing={4}>
             {moviesList.map((movie) => (
               <Grid
                 item
                 key={movie.imdbID}
                 xs={12}
-                sm={3}
-                md={3}
+                sm={4}
+                md={4}
                 lg={4}
-                justifyContent='center'
-                alignItems='center'
-                component='div'
                 onClick={() => onMovieCardClick(movie.imdbID)}>
                 <MovieCard movieData={movie} />
               </Grid>

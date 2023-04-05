@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, FormEvent, MouseEvent } from "react";
 import { MovieCardProps } from "components/MovieCard";
 import { SEARCH_APIs } from "services/apiCalls";
-
+import debounce from "utils/debounce";
 export interface MovieDetails {
   Title: string;
   Year: string;
@@ -42,15 +42,19 @@ export const useHome = () => {
   const [hasApiError, setHasApiError] = useState(false);
   const [showMovieDetailsDialog, setShowMovieDetailsDialog] = useState(false);
 
-  const handleSearchBarChange = useCallback((value: string) => {
-    setHasApiError(false);
-    setSearchString(value);
-  }, []);
+  const handleSearchBarChange = useCallback(
+    (value: string) => {
+      setHasApiError(false);
+      setSearchString(value);
+      debouncedFetchMoviesBySearch(value);
+    },
+    [searchString]
+  );
 
-  const fetchMoviesBySearch = () => {
+  const fetchMoviesBySearch = (searchTerm: string) => {
     setIsSearchLoading(true);
     setHasApiError(false);
-    SEARCH_APIs.searchWithTitle(searchString)
+    SEARCH_APIs.searchWithTitle(searchTerm)
       .then((response) => {
         console.log(response.data);
         const { Search, Response, Error } = response.data;
@@ -75,10 +79,12 @@ export const useHome = () => {
   const onSearchClick = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      fetchMoviesBySearch();
+      fetchMoviesBySearch(searchString);
     },
     [searchString]
   );
+
+  const debouncedFetchMoviesBySearch = debounce(fetchMoviesBySearch, 500);
 
   const onMovieCardClick = (imdbID: string) => {
     setIsMovieDetailsLoading(true);

@@ -13,7 +13,13 @@ export interface MovieCardProps {
 const MovieCard: FC<MovieCardProps> = ({ movieData }) => {
   const { Title, Year, Type, Poster } = movieData;
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card
+      sx={{
+        margin: "0 auto",
+        padding: 0,
+        maxWidth: "390px",
+        height: "260px",
+      }}>
       <CardMedia
         sx={{ height: 140 }}
         title={Title}
@@ -22,19 +28,38 @@ const MovieCard: FC<MovieCardProps> = ({ movieData }) => {
         }
       />
       <CardContent>
-        <Typography gutterBottom variant='h5' component='div'>
-          {Title}
-        </Typography>
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "space-between",
-            alignItems: "center",
+            height: "90px",
           }}>
-          <Typography variant='body2'>{Type}</Typography>
-          <Typography variant='body2' color='text.secondary'>
-            {Year}
+          <Typography
+            gutterBottom
+            variant='h5'
+            component='div'
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "2",
+              WebkitBoxOrient: "vertical",
+            }}>
+            {Title}
           </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}>
+            <Typography variant='body2'>{Type}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              {Year}
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>
