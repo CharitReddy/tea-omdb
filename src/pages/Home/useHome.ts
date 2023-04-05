@@ -5,38 +5,47 @@ import debounce from "utils/debounce";
 import { MovieDetails } from "common/interfaces";
 import calculateTotalPages from "utils/calculateTotalPages";
 
+//Constant values being used.
 const DEBOUNCE_TIMER = 1000;
+const OMDB_PAGE_SIZE = 10;
+const START_PAGE = 1;
+const INITIAL_ERROR_MSG = "";
+const EMPTY_SEARCH_STRING = "";
 
 export const useHome = () => {
-  const [searchString, setSearchString] = useState("");
+  //States for tracking search term, page numbers, API load and error states, and maintaining list of movies and data of individual movies, and controlling components to be viewed/hidden.
+  const [searchString, setSearchString] = useState(EMPTY_SEARCH_STRING);
   const [moviesList, setMoviesList] = useState<MovieCardProps["movieData"][]>(
     []
   );
   const [clickedMovie, setClickedMovie] = useState<MovieDetails | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(INITIAL_ERROR_MSG);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isMovieDetailsLoading, setIsMovieDetailsLoading] = useState(false);
   const [hasApiError, setHasApiError] = useState(false);
   const [showMovieDetailsDialog, setShowMovieDetailsDialog] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(START_PAGE);
+  const [totalPages, setTotalPages] = useState(START_PAGE);
 
+  //To trigger Search API call when new page is clicked
   useEffect(() => {
     debouncedFetchMoviesBySearch(searchString, page);
   }, [page]);
 
-  const handleSearchBarChange = (value: string) => {
+  //Debounced function to trigger Search API call when input is entered with a delay of 1s.
+  const handleSearchBarChange = useCallback((value: string) => {
     setHasApiError(false);
     setSearchString(value);
-    setPage(1);
-    debouncedFetchMoviesBySearch(value, 1);
-  };
+    setPage(START_PAGE);
+    debouncedFetchMoviesBySearch(value, START_PAGE);
+  }, []);
 
+  //API call for searching and fetching list of 10 movies based on search term and page number.
   const fetchMoviesBySearch = (searchTerm: string, pageNumber: number) => {
     setHasApiError(false);
-    if (searchTerm.trim() === "") {
+    if (searchTerm.trim() === EMPTY_SEARCH_STRING) {
       setMoviesList([]);
-      setPage(1);
+      setPage(START_PAGE);
       setIsSearchLoading(false);
       return;
     }
@@ -44,54 +53,62 @@ export const useHome = () => {
 
     SEARCH_APIs.searchWithTitle(searchTerm, pageNumber)
       .then((response) => {
-        console.log(response.data);
         const { totalResults, Search, Response, Error } = response.data;
+        //If the search term is valid and provides results.
         if (Response === "True") {
-          setTotalPages(calculateTotalPages(+totalResults, 10));
+          setTotalPages(calculateTotalPages(+totalResults, OMDB_PAGE_SIZE));
           setMoviesList(Search);
         } else {
+          //If API call succeeds but search term does not provide any results
           setHasApiError(true);
           setErrorMessage(Error);
           setMoviesList([]);
         }
       })
+      //API Call failure
       .catch((error) => {
         setHasApiError(true);
         setMoviesList([]);
-        console.log(error);
       })
       .finally(() => {
         setIsSearchLoading(false);
       });
   };
 
+  //Triggering API call when enter/search button is clicked.
   const onSearchClick = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      setPage(1);
+      setPage(START_PAGE);
     },
     [searchString]
   );
 
+  //Debounced version of the Search API function.
   const debouncedFetchMoviesBySearch = useCallback(
     debounce(fetchMoviesBySearch, DEBOUNCE_TIMER),
     []
   );
 
+  //API Call by ID when a movie card is clicked.
   const onMovieCardClick = (imdbID: string) => {
     setIsMovieDetailsLoading(true);
     setHasApiError(false);
     SEARCH_APIs.searchWithId(imdbID)
       .then((response) => {
-        console.log(response.data);
+        //Deleting the Response attribute since it is not part of movie details.
         let responseMovie = response.data;
+        delete responseMovie["Response"];
+        //Shifting the Ratings attribute to end to display ratings at the bottom in the Dialog/Modal.
         const keyToShift = "Ratings";
         const valueToShift = responseMovie[keyToShift];
         delete responseMovie[keyToShift];
         responseMovie[keyToShift] = valueToShift;
+
         setClickedMovie(responseMovie);
         setShowMovieDetailsDialog(true);
       })
+      //API Call failure
       .catch((error) => {
         setHasApiError(true);
       })
@@ -100,12 +117,15 @@ export const useHome = () => {
       });
   };
 
+  //Closing the Dialog/Modal on clicking the close button or outside the dialog/modal.
   const handleDetailsClose = useCallback(() => {
     setShowMovieDetailsDialog(false);
   }, []);
 
+  //On clicking clear search field button.
   const handleClearSearch = useCallback(() => {
-    setSearchString("");
+    setSearchString(EMPTY_SEARCH_STRING);
+    setMoviesList([]);
   }, []);
 
   return useMemo(
