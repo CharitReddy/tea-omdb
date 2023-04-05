@@ -1,15 +1,6 @@
 import { FC } from "react";
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
-export interface MovieCardProps {
-  movieData: {
-    Title: string;
-    Year: string;
-    imdbID: string;
-    Type: string;
-    Poster: string;
-  };
-}
-
+import { MovieCardProps } from "common/interfaces";
 const MovieCard: FC<MovieCardProps> = ({ movieData }) => {
   const { Title, Year, Type, Poster } = movieData;
   return (

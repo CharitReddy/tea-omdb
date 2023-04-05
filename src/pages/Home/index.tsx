@@ -1,7 +1,13 @@
 import { useHome } from "./useHome";
 import SearchBar from "components/SearchBar";
 import MovieCard from "components/MovieCard";
-import { Grid, Paper, CircularProgress, Alert } from "@mui/material";
+import {
+  Grid,
+  Paper,
+  CircularProgress,
+  Alert,
+  Typography,
+} from "@mui/material";
 import DetailsDialog from "components/DetailsDialog";
 import t from "translations";
 
@@ -34,6 +40,11 @@ const Home = () => {
         <Alert severity='error'>
           {errorMessage || t("genericErrorMessage")}
         </Alert>
+      )}
+      {!searchString && (
+        <Typography variant='h3' gutterBottom>
+          {t("homeScreenStaticMessage")}
+        </Typography>
       )}
       <Paper
         sx={{

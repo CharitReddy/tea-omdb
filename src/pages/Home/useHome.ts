@@ -1,34 +1,10 @@
 import { useState, useMemo, useCallback, FormEvent, MouseEvent } from "react";
-import { MovieCardProps } from "components/MovieCard";
+import { MovieCardProps } from "common/interfaces";
 import { SEARCH_APIs } from "services/apiCalls";
 import debounce from "utils/debounce";
-export interface MovieDetails {
-  Title: string;
-  Year: string;
-  Rated: string;
-  Released: string;
-  Runtime: string;
-  Genre: string;
-  Director: string;
-  Writer: string;
-  Actors: string;
-  Plot: string;
-  Language: string;
-  Country: string;
-  Awards: string;
-  Poster: string;
-  Ratings: { Source: string; Value: string }[];
-  Metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  imdbID: string;
-  Type: string;
-  DVD: string;
-  BoxOffice: string;
-  Production: string;
-  Website: string;
-  Response: string;
-}
+import { MovieDetails } from "common/interfaces";
+
+const DEBOUNCE_TIMER = 1000;
 
 export const useHome = () => {
   const [searchString, setSearchString] = useState("");
@@ -84,7 +60,10 @@ export const useHome = () => {
     [searchString]
   );
 
-  const debouncedFetchMoviesBySearch = debounce(fetchMoviesBySearch, 500);
+  const debouncedFetchMoviesBySearch = debounce(
+    fetchMoviesBySearch,
+    DEBOUNCE_TIMER
+  );
 
   const onMovieCardClick = (imdbID: string) => {
     setIsMovieDetailsLoading(true);

@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Grid, Typography } from "@mui/material";
-import { MovieDetails } from "pages/Home/useHome";
+import { MovieDetails } from "common/interfaces";
 import { grey } from "@mui/material/colors";
 import t from "translations";
 
