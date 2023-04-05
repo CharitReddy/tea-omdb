@@ -1,10 +1,10 @@
 import { FC } from "react";
+import { InputAdornment } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import t from "translations";
-import { InputAdornment } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 interface SearchBarProps {
   handleChange: (value: string) => void;
   value: string;
@@ -39,8 +39,8 @@ const SearchBar: FC<SearchBarProps> = ({
               width: "80%",
             },
           }}
-          placeholder={t("searchMoviesInput")}
-          inputProps={{ "aria-label": "Search Movies" }}
+          placeholder={t("searchMoviesInputPlaceholder")}
+          inputProps={{ "aria-label": t("searchMoviesLabel") }}
           onChange={(event) => handleChange(event.target.value)}
           value={value}
           endAdornment={
@@ -48,7 +48,7 @@ const SearchBar: FC<SearchBarProps> = ({
               {value ? (
                 <InputAdornment position='end'>
                   <IconButton
-                    aria-label='clear search'
+                    aria-label={t("clearSearchLabel")}
                     onClick={handleClearSearch}
                     edge='end'
                     disableRipple>
@@ -66,7 +66,6 @@ const SearchBar: FC<SearchBarProps> = ({
           type='submit'
           sx={{
             p: "10px",
-            // backgroundColor: "#f2f2f2",
             "&:hover": { backgroundColor: "#ddd" },
           }}
           aria-label={t("searchButtonLabel")}>

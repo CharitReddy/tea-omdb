@@ -6,37 +6,41 @@ import { MovieDetails } from "common/interfaces";
 import calculateTotalPages from "utils/calculateTotalPages";
 
 const DEBOUNCE_TIMER = 1000;
+const OMDB_PAGE_SIZE = 10;
+const START_PAGE = 1;
+const INITIAL_ERROR_MSG = "";
+const EMPTY_SEARCH_STRING = "";
 
 export const useHome = () => {
-  const [searchString, setSearchString] = useState("");
+  const [searchString, setSearchString] = useState(EMPTY_SEARCH_STRING);
   const [moviesList, setMoviesList] = useState<MovieCardProps["movieData"][]>(
     []
   );
   const [clickedMovie, setClickedMovie] = useState<MovieDetails | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(INITIAL_ERROR_MSG);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isMovieDetailsLoading, setIsMovieDetailsLoading] = useState(false);
   const [hasApiError, setHasApiError] = useState(false);
   const [showMovieDetailsDialog, setShowMovieDetailsDialog] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(START_PAGE);
+  const [totalPages, setTotalPages] = useState(START_PAGE);
 
   useEffect(() => {
     debouncedFetchMoviesBySearch(searchString, page);
   }, [page]);
 
-  const handleSearchBarChange = (value: string) => {
+  const handleSearchBarChange = useCallback((value: string) => {
     setHasApiError(false);
     setSearchString(value);
-    setPage(1);
-    debouncedFetchMoviesBySearch(value, 1);
-  };
+    setPage(START_PAGE);
+    debouncedFetchMoviesBySearch(value, START_PAGE);
+  }, []);
 
   const fetchMoviesBySearch = (searchTerm: string, pageNumber: number) => {
     setHasApiError(false);
-    if (searchTerm.trim() === "") {
+    if (searchTerm.trim() === EMPTY_SEARCH_STRING) {
       setMoviesList([]);
-      setPage(1);
+      setPage(START_PAGE);
       setIsSearchLoading(false);
       return;
     }
@@ -44,10 +48,9 @@ export const useHome = () => {
 
     SEARCH_APIs.searchWithTitle(searchTerm, pageNumber)
       .then((response) => {
-        console.log(response.data);
         const { totalResults, Search, Response, Error } = response.data;
         if (Response === "True") {
-          setTotalPages(calculateTotalPages(+totalResults, 10));
+          setTotalPages(calculateTotalPages(+totalResults, OMDB_PAGE_SIZE));
           setMoviesList(Search);
         } else {
           setHasApiError(true);
@@ -58,7 +61,6 @@ export const useHome = () => {
       .catch((error) => {
         setHasApiError(true);
         setMoviesList([]);
-        console.log(error);
       })
       .finally(() => {
         setIsSearchLoading(false);
@@ -68,7 +70,7 @@ export const useHome = () => {
   const onSearchClick = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      setPage(1);
+      setPage(START_PAGE);
     },
     [searchString]
   );
@@ -83,7 +85,6 @@ export const useHome = () => {
     setHasApiError(false);
     SEARCH_APIs.searchWithId(imdbID)
       .then((response) => {
-        console.log(response.data);
         let responseMovie = response.data;
         const keyToShift = "Ratings";
         const valueToShift = responseMovie[keyToShift];
@@ -105,7 +106,8 @@ export const useHome = () => {
   }, []);
 
   const handleClearSearch = useCallback(() => {
-    setSearchString("");
+    setSearchString(EMPTY_SEARCH_STRING);
+    setMoviesList([]);
   }, []);
 
   return useMemo(

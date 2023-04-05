@@ -1,6 +1,4 @@
-import { useHome } from "./useHome";
-import SearchBar from "components/SearchBar";
-import MovieCard from "components/MovieCard";
+import { useHome } from "pages/Home/useHome";
 import {
   Grid,
   Paper,
@@ -8,6 +6,8 @@ import {
   Alert,
   Typography,
 } from "@mui/material";
+import SearchBar from "components/SearchBar";
+import MovieCard from "components/MovieCard";
 import CustomPagination from "components/CustomPagination";
 import DetailsDialog from "components/DetailsDialog";
 import t from "translations";
@@ -92,7 +92,7 @@ const Home = () => {
           />
         )}
       </Paper>
-      {console.log(isMovieDetailsLoading)}
+
       {isMovieDetailsLoading && (
         <CircularProgress
           sx={{
