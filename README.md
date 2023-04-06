@@ -1,5 +1,7 @@
-### `npm start`
-
+### To run the application:
+Clone this repository.<br/>
+cd into the project and at the same level as package.json, run `npm install`.<br/>
+Run `npm start` to run the application.<br/>
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
