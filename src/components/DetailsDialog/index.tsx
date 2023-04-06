@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
   Button,
@@ -85,7 +85,7 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                   }
                   if (key === "Ratings")
                     return (
-                      <>
+                      <React.Fragment key={`${key}-ratings-${value}`}>
                         {/*Just a header Ratings */}
 
                         <Grid
@@ -105,12 +105,13 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                           item
                           xs={6}
                           key={`${clickedMovie?.imdbID}rating-${value}${key}-emptySpace`}></Grid>
-                        {clickedMovie?.[key].map((rating) => {
+                        {clickedMovie?.[key].map((rating, index) => {
                           {
                             /*Actual ratings containing both source and rating*/
                           }
                           return (
-                            <>
+                            <React.Fragment
+                              key={`${key}-rating-fragment-${index}`}>
                               <Grid
                                 item
                                 xs={6}
@@ -126,10 +127,10 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                                 key={`${clickedMovie?.imdbID}-${value}-rating-value`}>
                                 {rating.Value}
                               </Grid>
-                            </>
+                            </React.Fragment>
                           );
                         })}
-                      </>
+                      </React.Fragment>
                     );
 
                   {
@@ -140,7 +141,7 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                     /*Finally, returning a common JSX of header and information for all other keys */
                   }
                   return (
-                    <>
+                    <React.Fragment key={`${key}-${value}-fragment-wrapper`}>
                       <Grid
                         item
                         xs={6}
@@ -156,7 +157,7 @@ const DetailsDialog: FC<DetailsDialogProps> = ({
                         key={`${clickedMovie?.imdbID}-${value}-value-list`}>
                         {value}
                       </Grid>
-                    </>
+                    </React.Fragment>
                   );
                 }
               )}
